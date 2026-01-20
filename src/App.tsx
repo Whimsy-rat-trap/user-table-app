@@ -7,7 +7,7 @@ import Modal from './components/Modal/Modal';
 import Loading from './components/Loading/Loading';
 import './App.css';
 
-// Мемоизированные компоненты
+// Компоненты
 const MemoizedTable = memo(Table);
 const MemoizedPagination = memo(Pagination);
 const MemoizedModal = memo(Modal);
@@ -54,8 +54,16 @@ const App: React.FC = () => {
             setAllUsers(response.users);
             setCurrentPage(1);
         } catch (err) {
-            setError('Ошибка при загрузке данных. Пожалуйста, попробуйте позже.');
-            console.error(err);
+            console.error('Fetch error:', err);
+
+            // Детальное сообщение об ошибке
+            if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
+                setError('Ошибка сети. Проверьте подключение к интернету.');
+            } else if (err instanceof Error && err.message.includes('HTTP error')) {
+                setError('Ошибка сервера при загрузке данных. Пожалуйста, попробуйте позже.');
+            } else {
+                setError('Неизвестная ошибка при загрузке данных.');
+            }
         } finally {
             setLoading(false);
         }
@@ -135,18 +143,18 @@ const App: React.FC = () => {
         const totalUsers = filteredUsers.length;
         const totalPages = Math.ceil(totalUsers / itemsPerPage);
 
-        // Корректируем текущую страницу, если она вышла за пределы
+        // Корректируем текущую страницу если она вышла за пределы
         const validCurrentPage = Math.min(Math.max(1, currentPage), totalPages || 1);
 
         if (currentPage !== validCurrentPage && totalPages > 0) {
-            // Используем setTimeout чтобы избежать обновления состояния во время рендера
+            //setTimeout чтобы избежать обновления состояния во время рендера
             setTimeout(() => setCurrentPage(validCurrentPage), 0);
         }
 
         return { totalUsers, totalPages, validCurrentPage };
     }, [filteredUsers, currentPage, itemsPerPage]);
 
-    // Мемоизированные пользователи для текущей страницы
+    //Пользователи для текущей страницы
     const currentUsers = useMemo(() => {
         const { validCurrentPage } = paginationData;
         const startIndex = (validCurrentPage - 1) * itemsPerPage;
@@ -160,7 +168,7 @@ const App: React.FC = () => {
         fetchUsers();
     }, [fetchUsers]);
 
-    // Мемоизированные обработчики
+    // обработчики
     const handleSort = useCallback((field: SortField) => {
         setSortField(prevField => {
             if (prevField === field) {
@@ -202,7 +210,7 @@ const App: React.FC = () => {
         setModalOpen(false);
     }, []);
 
-    // Мемоизированные пропсы для таблицы
+    // Пропсы для таблицы
     const tableProps = useMemo(() => ({
         users: currentUsers,
         sortField,
@@ -213,7 +221,7 @@ const App: React.FC = () => {
         onColumnResize: handleColumnResize
     }), [currentUsers, sortField, sortDirection, handleSort, handleRowClick, columnWidths, handleColumnResize]);
 
-    // Мемоизированные пропсы для пагинации
+    // Пропсы для пагинации
     const paginationProps = useMemo(() => ({
         currentPage: paginationData.validCurrentPage,
         totalPages: paginationData.totalPages,
@@ -274,7 +282,7 @@ const App: React.FC = () => {
     );
 };
 
-// Выносим контролы фильтрации в отдельный мемоизированный компонент
+// контролы фильтрации
 interface FilterControlsProps {
     search: string;
     gender: string;
