@@ -1,0 +1,100 @@
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 100%;
+}
+
+.users-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    text-align: left;
+    color: #495057;
+    user-select: none;
+    position: relative;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.users-table th.sortable {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.users-table th.sortable:hover {
+    background-color: #e9ecef;
+}
+
+.users-table th .sort-icon {
+    margin-left: 8px;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.users-table th .resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    background-color: transparent;
+    transition: background-color 0.2s;
+}
+
+.users-table th .resize-handle:hover,
+.users-table th .resize-handle.resizing {
+    background-color: #646cff;
+}
+
+.users-table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #e9ecef;
+    color: #212529;
+}
+
+.users-table tbody tr {
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.users-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.users-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.no-data {
+    text-align: center;
+    padding: 40px !important;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.gender-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.gender-male {
+    background-color: #d1e7ff;
+    color: #084298;
+}
+
+.gender-female {
+    background-color: #f8d7da;
+    color: #842029;
+}

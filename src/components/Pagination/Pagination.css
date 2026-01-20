@@ -1,0 +1,111 @@
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.pagination-info {
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.pagination-button {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #495057;
+    transition: all 0.2s;
+    min-width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.pagination-button:hover:not(:disabled) {
+    background-color: #f8f9fa;
+    border-color: #646cff;
+    color: #646cff;
+}
+
+.pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: #adb5bd;
+}
+
+.pagination-button.active {
+    background-color: #646cff;
+    color: white;
+    border-color: #646cff;
+    font-weight: 600;
+}
+
+.pagination-button.active:hover {
+    background-color: #535bf2;
+    border-color: #535bf2;
+}
+
+.pagination-first,
+.pagination-prev,
+.pagination-next,
+.pagination-last {
+    font-size: 16px;
+    padding: 8px 10px;
+}
+
+.pagination-first {
+    border-radius: 4px 0 0 4px;
+}
+
+.pagination-last {
+    border-radius: 0 4px 4px 0;
+}
+
+.pagination-ellipsis {
+    padding: 0 8px;
+    color: #6c757d;
+    font-size: 14px;
+    user-select: none;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    .pagination-info {
+        text-align: center;
+    }
+
+    .pagination-controls {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .pagination-button {
+        min-width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+}
