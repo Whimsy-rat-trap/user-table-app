@@ -1,4 +1,11 @@
 import { memo, useMemo, useCallback } from 'react';
+import {
+    FaAngleDoubleLeft,
+    FaAngleLeft,
+    FaAngleRight,
+    FaAngleDoubleRight,
+    FaEllipsisH
+} from 'react-icons/fa';
 import './Pagination.css';
 
 interface PaginationProps {
@@ -41,12 +48,12 @@ const Pagination: React.FC<PaginationProps> = memo(({
             }
 
             if (startPage > 2) {
-                pages.unshift('...');
+                pages.unshift('ellipsis-start');
                 pages.unshift(1);
             }
 
             if (endPage < totalPages - 1) {
-                pages.push('...');
+                pages.push('ellipsis-end');
                 pages.push(totalPages);
             }
         }
@@ -78,7 +85,9 @@ const Pagination: React.FC<PaginationProps> = memo(({
     return (
         <div className="pagination-container">
             <div className="pagination-info">
-                Показано {startItem}-{endItem} из {totalItems} пользователей
+        <span className="pagination-info-text">
+          Показано <strong>{startItem}-{endItem}</strong> из <strong>{totalItems}</strong> пользователей
+        </span>
             </div>
 
             <div className="pagination-controls">
@@ -87,8 +96,9 @@ const Pagination: React.FC<PaginationProps> = memo(({
                     disabled={currentPage === 1}
                     className="pagination-button pagination-first"
                     title="Первая страница"
+                    aria-label="Первая страница"
                 >
-                    ««
+                    <FaAngleDoubleLeft />
                 </button>
 
                 <button
@@ -96,35 +106,44 @@ const Pagination: React.FC<PaginationProps> = memo(({
                     disabled={currentPage === 1}
                     className="pagination-button pagination-prev"
                     title="Предыдущая страница"
+                    aria-label="Предыдущая страница"
                 >
-                    «
+                    <FaAngleLeft />
                 </button>
 
-                {pageNumbers.map((page, index) => (
-                    page === '...' ? (
-                        <span key={`ellipsis-${index}`} className="pagination-ellipsis">
-              ...
-            </span>
-                    ) : (
+                {pageNumbers.map((page, index) => {
+                    if (page === 'ellipsis-start' || page === 'ellipsis-end') {
+                        return (
+                            <span key={`ellipsis-${index}`} className="pagination-ellipsis">
+                <FaEllipsisH />
+              </span>
+                        );
+                    }
+
+                    const pageNumber = page as number;
+                    return (
                         <button
-                            key={page}
-                            onClick={() => handlePageChange(Number(page))}
+                            key={pageNumber}
+                            onClick={() => handlePageChange(pageNumber)}
                             className={`pagination-button ${
-                                currentPage === page ? 'active' : ''
+                                currentPage === pageNumber ? 'active' : ''
                             }`}
+                            aria-label={`Страница ${pageNumber}`}
+                            aria-current={currentPage === pageNumber ? 'page' : undefined}
                         >
-                            {page}
+                            {pageNumber}
                         </button>
-                    )
-                ))}
+                    );
+                })}
 
                 <button
                     onClick={handleNextPage}
                     disabled={currentPage === totalPages}
                     className="pagination-button pagination-next"
                     title="Следующая страница"
+                    aria-label="Следующая страница"
                 >
-                    »
+                    <FaAngleRight />
                 </button>
 
                 <button
@@ -132,8 +151,9 @@ const Pagination: React.FC<PaginationProps> = memo(({
                     disabled={currentPage === totalPages}
                     className="pagination-button pagination-last"
                     title="Последняя страница"
+                    aria-label="Последняя страница"
                 >
-                    »»
+                    <FaAngleDoubleRight />
                 </button>
             </div>
         </div>

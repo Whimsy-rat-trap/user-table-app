@@ -1,5 +1,6 @@
 import { memo, useCallback } from 'react';
 import { SortField, SortDirection } from '../../types/user';
+import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 
 interface TableHeaderProps {
     column: {
@@ -31,15 +32,17 @@ const TableHeader: React.FC<TableHeaderProps> = memo(({
     }, [column.key, column.sortable, onSort]);
 
     const getSortIcon = useCallback(() => {
-        if (sortField !== column.key) return null;
+        if (sortField !== column.key) {
+            return <FaSort className="sort-icon-default" />;
+        }
 
         switch (sortDirection) {
             case 'asc':
-                return '↑';
+                return <FaSortUp className="sort-icon-asc" />;
             case 'desc':
-                return '↓';
+                return <FaSortDown className="sort-icon-desc" />;
             default:
-                return null;
+                return <FaSort className="sort-icon-default" />;
         }
     }, [sortField, sortDirection, column.key]);
 
@@ -52,16 +55,17 @@ const TableHeader: React.FC<TableHeaderProps> = memo(({
             onClick={handleClick}
         >
             <div className="header-content">
-                {column.label}
+                <span className="header-label">{column.label}</span>
                 {column.sortable && (
                     <span className="sort-icon">
-            {sortIcon}
-          </span>
+                        {sortIcon}
+                    </span>
                 )}
             </div>
             <div
                 className={`resize-handle ${isResizing ? 'resizing' : ''}`}
                 onMouseDown={onResizeStart}
+                title="Изменить ширину колонки"
             />
         </th>
     );

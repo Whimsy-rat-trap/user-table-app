@@ -1,9 +1,10 @@
 import { memo, useMemo } from 'react';
 import { User } from '../../types/user';
+import { FaMars, FaVenus } from 'react-icons/fa';
 
 interface TableRowProps {
     user: User;
-    columns: readonly { key: string; label: string; sortable?: boolean }[];
+    columns: Array<{ key: string; label: string }>;
     onRowClick: (user: User) => void;
     columnWidths: Record<string, number>;
 }
@@ -18,7 +19,6 @@ const TableRow: React.FC<TableRowProps> = memo(({
         onRowClick(user);
     };
 
-    //Ячейки строки
     const cells = useMemo(() =>
             columns.map((column) => {
                 let content: React.ReactNode;
@@ -39,7 +39,15 @@ const TableRow: React.FC<TableRowProps> = memo(({
                     case 'gender':
                         content = (
                             <span className={`gender-badge gender-${user.gender}`}>
-              {user.gender === 'male' ? 'Мужской' : 'Женский'}
+              {user.gender === 'male' ? (
+                  <>
+                      <FaMars className="gender-icon" /> Мужской
+                  </>
+              ) : (
+                  <>
+                      <FaVenus className="gender-icon" /> Женский
+                  </>
+              )}
             </span>
                         );
                         break;
