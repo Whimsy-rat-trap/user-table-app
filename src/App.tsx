@@ -6,6 +6,7 @@ import Pagination from './components/Pagination/Pagination';
 import Modal from './components/Modal/Modal';
 import Loading from './components/Loading/Loading';
 import './App.css';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Компоненты
 const MemoizedTable = memo(Table);
@@ -266,15 +267,34 @@ const App: React.FC = () => {
                     </div>
                 ) : (
                     <>
-                        <MemoizedTable {...tableProps} />
+                        <Table
+                            users={currentUsers}
+                            sortField={sortField}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+                            onRowClick={handleRowClick}
+                            columnWidths={columnWidths}
+                            onColumnResize={handleColumnResize}
+                        />
 
                         {paginationData.totalPages > 0 && (
-                            <MemoizedPagination {...paginationProps} />
+                            <Pagination
+                                currentPage={paginationData.validCurrentPage}
+                                totalPages={paginationData.totalPages}
+                                totalItems={paginationData.totalUsers}
+                                itemsPerPage={itemsPerPage}
+                                onPageChange={setCurrentPage}
+                            />
                         )}
 
-                        {modalOpen && selectedUser && (
-                            <MemoizedModal {...modalProps} />
-                        )}
+                        <AnimatePresence>
+                            {modalOpen && selectedUser && (
+                                <Modal
+                                    user={selectedUser}
+                                    onClose={() => setModalOpen(false)}
+                                />
+                            )}
+                        </AnimatePresence>
                     </>
                 )}
             </main>
@@ -318,23 +338,33 @@ const FilterControls = memo(({
 
     return (
         <div className="controls">
-            <input
+            <motion.input
                 type="text"
                 placeholder="Поиск по имени, email или телефону..."
                 value={search}
                 onChange={handleSearchChange}
                 className="search-input"
+                whileFocus={{
+                    scale: 1.02,
+                    boxShadow: '0 0 0 3px rgba(100, 108, 255, 0.2)'
+                }}
+                transition={{ duration: 0.2 }}
             />
-            <select
+            <motion.select
                 value={gender}
                 onChange={handleGenderChange}
                 className="filter-select"
+                whileFocus={{
+                    scale: 1.02,
+                    boxShadow: '0 0 0 3px rgba(100, 108, 255, 0.2)'
+                }}
+                transition={{ duration: 0.2 }}
             >
                 <option value="">Все полы</option>
                 <option value="male">Мужской</option>
                 <option value="female">Женский</option>
-            </select>
-            <input
+            </motion.select>
+            <motion.input
                 type="number"
                 placeholder="Мин. возраст"
                 value={ageMin}
@@ -342,8 +372,13 @@ const FilterControls = memo(({
                 className="age-input"
                 min="0"
                 max="150"
+                whileFocus={{
+                    scale: 1.02,
+                    boxShadow: '0 0 0 3px rgba(100, 108, 255, 0.2)'
+                }}
+                transition={{ duration: 0.2 }}
             />
-            <input
+            <motion.input
                 type="number"
                 placeholder="Макс. возраст"
                 value={ageMax}
@@ -351,6 +386,11 @@ const FilterControls = memo(({
                 className="age-input"
                 min="0"
                 max="150"
+                whileFocus={{
+                    scale: 1.02,
+                    boxShadow: '0 0 0 3px rgba(100, 108, 255, 0.2)'
+                }}
+                transition={{ duration: 0.2 }}
             />
         </div>
     );

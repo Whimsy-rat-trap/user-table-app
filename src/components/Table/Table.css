@@ -21,6 +21,8 @@
     user-select: none;
     position: relative;
     border-bottom: 2px solid #dee2e6;
+    padding: 16px 12px;
+    transition: background-color 0.2s;
 }
 
 .users-table th.sortable {
@@ -61,12 +63,12 @@
 }
 
 .users-table tbody tr {
-    transition: background-color 0.2s;
     cursor: pointer;
+    transition: background-color 0.15s ease-out;
 }
 
 .users-table tbody tr:hover {
-    background-color: #f8f9fa;
+    background-color: rgba(100, 108, 255, 0.08);
 }
 
 .users-table tbody tr:last-child td {
@@ -81,20 +83,68 @@
 }
 
 .gender-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: capitalize;
+    white-space: nowrap;
+    transition: transform 0.2s;
 }
 
 .gender-male {
-    background-color: #d1e7ff;
-    color: #084298;
+    background-color: #e3fafc;
+    color: #0b7285;
+    border: 1px solid #99e9f2;
 }
 
 .gender-female {
-    background-color: #f8d7da;
-    color: #842029;
+    background-color: #fff0f6;
+    color: #c2255c;
+    border: 1px solid #fcc2d7;
 }
+
+.gender-badge:hover {
+    transform: scale(1.05);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.header-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.sort-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+.sort-icon-default {
+    color: #adb5bd;
+    font-size: 14px;
+}
+
+.sort-icon-asc {
+    color: #198754;
+    font-size: 14px;
+}
+
+.sort-icon-desc {
+    color: #dc3545;
+    font-size: 14px;
+}
+

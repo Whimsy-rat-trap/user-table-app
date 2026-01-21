@@ -14,19 +14,6 @@ interface TableProps {
     onColumnResize: (columnKey: string, newWidth: number) => void;
 }
 
-// Столбцы таблицы
-const columns = [
-    { key: 'firstName', label: 'Фамилия', sortable: true },
-    { key: 'lastName', label: 'Имя', sortable: true },
-    { key: 'maidenName', label: 'Отчество', sortable: true },
-    { key: 'age', label: 'Возраст', sortable: true },
-    { key: 'gender', label: 'Пол', sortable: true },
-    { key: 'phone', label: 'Телефон', sortable: true },
-    { key: 'email', label: 'Email', sortable: false },
-    { key: 'country', label: 'Страна', sortable: false },
-    { key: 'city', label: 'Город', sortable: false }
-] as const;
-
 const Table: React.FC<TableProps> = memo(({
                                               users,
                                               sortField,
@@ -47,7 +34,7 @@ const Table: React.FC<TableProps> = memo(({
         const handleMouseMove = (e: MouseEvent) => {
             const deltaX = e.clientX - startX;
             const newWidth = startWidth + deltaX;
-            onColumnResize(columnKey, newWidth);
+            onColumnResize(columnKey, Math.max(50, newWidth));
         };
 
         const handleMouseUp = () => {
@@ -60,16 +47,35 @@ const Table: React.FC<TableProps> = memo(({
         document.addEventListener('mouseup', handleMouseUp);
     }, [columnWidths, onColumnResize]);
 
+    const columns = [
+        { key: 'firstName', label: 'Фамилия', sortable: true },
+        { key: 'lastName', label: 'Имя', sortable: true },
+        { key: 'maidenName', label: 'Отчество', sortable: true },
+        { key: 'age', label: 'Возраст', sortable: true },
+        { key: 'gender', label: 'Пол', sortable: true },
+        { key: 'phone', label: 'Телефон', sortable: true },
+        { key: 'email', label: 'Email', sortable: false },
+        { key: 'country', label: 'Страна', sortable: false },
+        { key: 'city', label: 'Город', sortable: false }
+    ];
+
     if (users.length === 0) {
         return (
             <div className="no-data-message">
-                Нет данных для отображения
+                <div className="no-data-content">
+                    <div className="no-data-icon">📊</div>
+                    <p>Нет данных для отображения</p>
+                    <p className="no-data-subtext">Попробуйте изменить фильтры</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="table-container">
+        <div
+            className="table-container"
+            style={{ minWidth: `${Object.values(columnWidths).reduce((a, b) => a + b, 0)}px` }}
+        >
             <table ref={tableRef} className="users-table">
                 <thead>
                 <tr>

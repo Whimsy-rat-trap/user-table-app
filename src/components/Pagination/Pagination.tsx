@@ -25,37 +25,46 @@ const Pagination: React.FC<PaginationProps> = memo(({
                                                     }) => {
     const getPageNumbers = useCallback(() => {
         const pages = [];
-        const maxVisiblePages = 3;
+        const maxVisiblePages = 5;
 
-        if (totalPages <= maxVisiblePages) {
+        // Если всего страниц меньше или равно 7 показываем все
+        if (totalPages <= 7) {
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
             }
-        } else {
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            return pages;
+        }
 
-            if (startPage === 1) {
-                endPage = maxVisiblePages;
+        // Диапазон страниц вокруг текущей (2 страницы с каждой стороны)
+        let start = Math.max(1, currentPage - 2);
+        let end = Math.min(totalPages, currentPage + 2);
+
+        // Расширение диапазона
+        if (end - start + 1 < maxVisiblePages) {
+            if (start === 1) {
+                end = Math.min(totalPages, start + maxVisiblePages - 1);
+            } else if (end === totalPages) {
+                start = Math.max(1, end - maxVisiblePages + 1);
             }
+        }
 
-            if (endPage === totalPages) {
-                startPage = totalPages - maxVisiblePages + 1;
+        if (start > 1) {
+            pages.push(1);
+            if (start > 2) {
+                pages.push('ellipsis-start');
             }
+        }
 
-            for (let i = startPage; i <= endPage; i++) {
-                pages.push(i);
-            }
+        // Добавляем диапазон страниц
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
 
-            if (startPage > 2) {
-                pages.unshift('ellipsis-start');
-                pages.unshift(1);
-            }
-
-            if (endPage < totalPages - 1) {
+        if (end < totalPages) {
+            if (end < totalPages - 1) {
                 pages.push('ellipsis-end');
-                pages.push(totalPages);
             }
+            pages.push(totalPages);
         }
 
         return pages;
@@ -85,9 +94,9 @@ const Pagination: React.FC<PaginationProps> = memo(({
     return (
         <div className="pagination-container">
             <div className="pagination-info">
-        <span className="pagination-info-text">
-          Показано <strong>{startItem}-{endItem}</strong> из <strong>{totalItems}</strong> пользователей
-        </span>
+                <span className="pagination-info-text">
+                    Показано <strong>{startItem}-{endItem}</strong> из <strong>{totalItems}</strong> пользователей
+                </span>
             </div>
 
             <div className="pagination-controls">
@@ -115,23 +124,23 @@ const Pagination: React.FC<PaginationProps> = memo(({
                     if (page === 'ellipsis-start' || page === 'ellipsis-end') {
                         return (
                             <span key={`ellipsis-${index}`} className="pagination-ellipsis">
-                <FaEllipsisH />
-              </span>
+                                <FaEllipsisH />
+                            </span>
                         );
                     }
 
                     const pageNumber = page as number;
+                    const isActive = currentPage === pageNumber;
+
                     return (
                         <button
-                            key={pageNumber}
+                            key={`page-${pageNumber}-${index}`}
                             onClick={() => handlePageChange(pageNumber)}
-                            className={`pagination-button ${
-                                currentPage === pageNumber ? 'active' : ''
-                            }`}
+                            className={`pagination-button ${isActive ? 'active' : ''}`}
                             aria-label={`Страница ${pageNumber}`}
-                            aria-current={currentPage === pageNumber ? 'page' : undefined}
+                            aria-current={isActive ? 'page' : undefined}
                         >
-                            {pageNumber}
+                            <span className="page-number">{pageNumber}</span>
                         </button>
                     );
                 })}

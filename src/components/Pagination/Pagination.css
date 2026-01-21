@@ -60,7 +60,12 @@
 
 .pagination-button.active:hover {
     background-color: #535bf2;
+    color: white !important;
     border-color: #535bf2;
+}
+
+.pagination-button.active:hover span {
+    color: white !important;
 }
 
 .pagination-first,

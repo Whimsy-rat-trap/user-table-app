@@ -23,7 +23,6 @@ const TableHeader: React.FC<TableHeaderProps> = memo(({
                                                           onSort,
                                                           width,
                                                           onResizeStart,
-                                                          isResizing
                                                       }) => {
     const handleClick = useCallback(() => {
         if (column.sortable) {
@@ -50,20 +49,26 @@ const TableHeader: React.FC<TableHeaderProps> = memo(({
 
     return (
         <th
-            style={{ width: `${width}px`, minWidth: '50px' }}
+            style={{
+                width: `${width}px`,
+                minWidth: '50px',
+                position: 'relative'
+            }}
             className={column.sortable ? 'sortable' : ''}
             onClick={handleClick}
         >
             <div className="header-content">
-                <span className="header-label">{column.label}</span>
-                {column.sortable && (
-                    <span className="sort-icon">
-                        {sortIcon}
-                    </span>
-                )}
+                <div className="header-text">
+                    <span className="header-label">{column.label}</span>
+                    {column.sortable && (
+                        <div className="sort-icon-container">
+                            {sortIcon}
+                        </div>
+                    )}
+                </div>
             </div>
             <div
-                className={`resize-handle ${isResizing ? 'resizing' : ''}`}
+                className="resize-handle"
                 onMouseDown={onResizeStart}
                 title="Изменить ширину колонки"
             />

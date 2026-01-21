@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -86,6 +88,8 @@ body {
 
 .app-main {
   min-height: 500px;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .no-data-message {
@@ -101,4 +105,23 @@ body {
 
 .pagination-wrapper {
   margin-top: 20px;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.table-container {
+  transform: translateZ(0);
+  will-change: transform;
+  transition: opacity 0.2s ease;
+}
+
+.table-container.filtering {
+  opacity: 0.9;
 }

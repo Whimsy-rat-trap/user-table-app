@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 import { User } from '../../types/user';
 import { FaMars, FaVenus } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 interface TableRowProps {
     user: User;
@@ -80,9 +81,16 @@ const TableRow: React.FC<TableRowProps> = memo(({
     );
 
     return (
-        <tr onClick={handleClick}>
+        <motion.tr
+            onClick={handleClick}
+            whileHover={{
+                backgroundColor: 'rgba(100, 108, 255, 0.08)',
+            }}
+            transition={{ duration: 0.15 }}
+            className="table-row"
+        >
             {cells}
-        </tr>
+        </motion.tr>
     );
 });
 
