@@ -40,16 +40,16 @@ const TableRow: React.FC<TableRowProps> = memo(({
                     case 'gender':
                         content = (
                             <span className={`gender-badge gender-${user.gender}`}>
-              {user.gender === 'male' ? (
-                  <>
-                      <FaMars className="gender-icon" /> Мужской
-                  </>
-              ) : (
-                  <>
-                      <FaVenus className="gender-icon" /> Женский
-                  </>
-              )}
-            </span>
+                                {user.gender === 'male' ? (
+                                    <>
+                                        <FaMars className="gender-icon" /> Мужской
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaVenus className="gender-icon" /> Женский
+                                    </>
+                                )}
+                            </span>
                         );
                         break;
                     case 'phone':

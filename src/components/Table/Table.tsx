@@ -88,7 +88,6 @@ const Table: React.FC<TableProps> = memo(({
                             onSort={onSort}
                             width={columnWidths[column.key]}
                             onResizeStart={(e) => handleResizeStart(column.key, e.clientX)}
-                            isResizing={resizingColumn === column.key}
                         />
                     ))}
                 </tr>

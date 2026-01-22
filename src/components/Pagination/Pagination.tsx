@@ -25,7 +25,8 @@ const Pagination: React.FC<PaginationProps> = memo(({
                                                     }) => {
     const getPageNumbers = useCallback(() => {
         const pages = [];
-        const maxVisiblePages = 5;
+        // Для крайних пагинаций
+        const maxVisiblePages = 3;
 
         // Если всего страниц меньше или равно 7 показываем все
         if (totalPages <= 7) {

@@ -13,7 +13,6 @@ interface TableHeaderProps {
     onSort: (field: SortField) => void;
     width: number;
     onResizeStart: (e: React.MouseEvent) => void;
-    isResizing: boolean;
 }
 
 const TableHeader: React.FC<TableHeaderProps> = memo(({
