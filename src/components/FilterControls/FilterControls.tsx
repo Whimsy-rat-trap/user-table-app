@@ -34,7 +34,7 @@ const FilterControls: React.FC<FilterControlsProps> = memo(({
         <div className="controls">
         <motion.input
             type="text"
-    placeholder="Поиск по имени, email или телефону..."
+    placeholder="Поиск по имени, email..."
     value={filters.search || ''}
     onChange={handleSearchChange}
     className="search-input"

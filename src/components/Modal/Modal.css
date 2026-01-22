@@ -16,9 +16,9 @@
 .modal-content {
     background: white;
     border-radius: 16px;
-    max-width: 500px; /* Уменьшили максимальную ширину */
+    max-width: 500px;
     width: 100%;
-    max-height: 85vh; /* Уменьшили максимальную высоту */
+    max-height: 85vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -152,7 +152,7 @@
 .user-info-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px; /* Уменьшили отступы между элементами */
+    gap: 16px;
     width: 100%;
 }
 
@@ -253,7 +253,7 @@
 
 @media (max-width: 768px) {
     .modal-content {
-        max-width: 90vw; /* Адаптивная ширина на мобильных */
+        max-width: 90vw;
         max-height: 85vh;
     }
 
@@ -282,7 +282,7 @@
     }
 
     .height-weight-row {
-        grid-template-columns: 1fr; /* На мобильных рост и вес в столбик */
+        grid-template-columns: 1fr;
         gap: 12px;
     }
 

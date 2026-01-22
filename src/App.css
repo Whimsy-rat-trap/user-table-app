@@ -17,65 +17,141 @@ body {
 
 .app {
   min-height: 100vh;
-  padding: 20px;
+  padding: 16px;
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .app-header {
-  margin-bottom: 30px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 16px;
 }
 
 .app-header h1 {
   color: #333;
   margin-bottom: 20px;
-  font-size: 2rem;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-input,
+.filter-select,
+.age-input {
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 180px;
+  transition: all 0.2s;
+  background: white;
+  color: #495057;
+  font-family: inherit;
+}
+
+.search-input::placeholder,
+.age-input::placeholder {
+  color: #6c757d;
+}
+
+.search-input:focus,
+.filter-select:focus,
+.age-input:focus {
+  outline: none;
+  border-color: #646cff;
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.1);
+}
+
+.age-input::-webkit-inner-spin-button,
+.age-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.age-input {
+  min-width: 120px;
+  -moz-appearance: textfield; /* Для Firefox */
+}
+
+/* Выпадающий список */
+.filter-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23646cff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
+  cursor: pointer;
+  position: relative;
+}
+
+.filter-select:hover {
+  border-color: #646cff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23535bf2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+.filter-select:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(100, 108, 255, 0.2);
 }
 
 .error-message {
-  background-color: #fee;
-  border: 1px solid #fcc;
-  color: #c33;
+  background-color: white;
+  border: 1px solid #f8d7da;
+  color: #721c24;
   padding: 20px;
-  border-radius: 6px;
+  border-radius: 8px;
   text-align: center;
-  margin: 20px 0;
+  margin: 16px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .retry-button {
-  margin-top: 10px;
+  margin-top: 12px;
   padding: 8px 16px;
   background-color: #646cff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .retry-button:hover {
   background-color: #535bf2;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(100, 108, 255, 0.2);
 }
 
 .app-main {
-  min-height: 500px;
+  min-height: 400px;
   transform: translateZ(0);
   will-change: transform;
 }
 
 .no-data-message {
   text-align: center;
-  padding: 40px;
+  padding: 30px;
   color: #6c757d;
   font-style: italic;
   background: white;
   border-radius: 8px;
-  margin: 20px 0;
+  margin: 16px 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .pagination-wrapper {
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 .fade-in {
