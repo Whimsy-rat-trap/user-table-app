@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useEffect } from 'react';
 import { useUsers } from './hooks/useUsers';
 import { useModal } from './hooks/useModal';
 import { useColumnResize } from './hooks/useColumnResize';
@@ -11,15 +11,17 @@ import './App.css';
 import { AnimatePresence } from 'framer-motion';
 
 const App: React.FC = () => {
+    // Используем кастомные хуки для управления логикой
     const {
+        users,
         loading,
         error,
         currentPage,
         sortField,
         sortDirection,
         filters,
-        currentUsers,
-        paginationData,
+        totalUsers,
+        totalPages,
         itemsPerPage,
         setCurrentPage,
         handleSort,
@@ -30,30 +32,38 @@ const App: React.FC = () => {
     const { columnWidths, handleColumnResize } = useColumnResize();
     const { selectedUser, modalOpen, handleRowClick, handleCloseModal } = useModal();
 
+    // Отладка для проверки данных
+    //useEffect(() => {
+    //    console.log('Текущая страница:', currentPage);
+    //    console.log('Всего страниц:', totalPages);
+    //    console.log('Всего пользователей:', totalUsers);
+    //    console.log('Пользователей на странице:', users.length);
+    //}, [currentPage, totalPages, totalUsers, users]);
+
     const tableProps = useMemo(() => ({
-        users: currentUsers,
+        users,
         sortField,
         sortDirection,
         onSort: handleSort,
         onRowClick: handleRowClick,
         columnWidths,
         onColumnResize: handleColumnResize
-    }), [currentUsers, sortField, sortDirection, handleSort, handleRowClick, columnWidths, handleColumnResize]);
+    }), [users, sortField, sortDirection, handleSort, handleRowClick, columnWidths, handleColumnResize]);
 
     const paginationProps = useMemo(() => ({
-        currentPage: paginationData.validCurrentPage,
-        totalPages: paginationData.totalPages,
-        totalItems: paginationData.totalUsers,
+        currentPage,
+        totalPages,
+        totalItems: totalUsers,
         itemsPerPage,
         onPageChange: setCurrentPage
-    }), [paginationData, itemsPerPage, setCurrentPage]);
+    }), [currentPage, totalPages, totalUsers, itemsPerPage, setCurrentPage]);
 
     const modalProps = useMemo(() => ({
         user: selectedUser,
         onClose: handleCloseModal
     }), [selectedUser, handleCloseModal]);
 
-    if (loading) {
+    if (loading && users.length === 0) {
         return <Loading />;
     }
 
@@ -79,7 +89,7 @@ const App: React.FC = () => {
                     <>
                         <Table {...tableProps} />
 
-                        {paginationData.totalPages > 0 && (
+                        {totalPages > 1 && (
                             <Pagination {...paginationProps} />
                         )}
 

@@ -1,7 +1,6 @@
-import { memo, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { memo, useCallback, useEffect, useState } from 'react';
+import { FilterParams } from '../../types/user';
 import './FilterControls.css';
-import {FilterParams} from "../../types/user";
 
 interface FilterControlsProps {
     filters: FilterParams;
@@ -12,9 +11,25 @@ const FilterControls: React.FC<FilterControlsProps> = memo(({
                                                                 filters,
                                                                 onFilterChange
                                                             }) => {
+    const [localFilters, setLocalFilters] = useState<FilterParams>(filters);
+
+    useEffect(() => {
+        setLocalFilters(filters);
+    }, [filters]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (localFilters.search !== filters.search) {
+                onFilterChange({ search: localFilters.search });
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [localFilters.search, filters.search, onFilterChange]);
+
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        onFilterChange({ search: e.target.value });
-    }, [onFilterChange]);
+        setLocalFilters(prev => ({ ...prev, search: e.target.value }));
+    }, []);
 
     const handleGenderChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
         onFilterChange({ gender: e.target.value || undefined });
@@ -32,62 +47,42 @@ const FilterControls: React.FC<FilterControlsProps> = memo(({
 
     return (
         <div className="controls">
-        <motion.input
-            type="text"
-    placeholder="Поиск по имени, email..."
-    value={filters.search || ''}
-    onChange={handleSearchChange}
-    className="search-input"
-    whileFocus={{
-        scale: 1.02,
-            boxShadow: '0 0 0 3px rgba(100, 108, 255, 0.2)'
-    }}
-    transition={{ duration: 0.2 }}
-    />
-    <motion.select
-    value={filters.gender || ''}
-    onChange={handleGenderChange}
-    className="filter-select"
-    whileFocus={{
-        scale: 1.02,
-            boxShadow: '0 0 0 3px rgba(100, 108, 255, 0.2)'
-    }}
-    transition={{ duration: 0.2 }}
->
-    <option value="">Все полы</option>
-    <option value="male">Мужской</option>
-        <option value="female">Женский</option>
-        </motion.select>
-        <motion.input
-    type="number"
-    placeholder="Мин. возраст"
-    value={filters.ageMin || ''}
-    onChange={handleAgeMinChange}
-    className="age-input"
-    min="0"
-    max="150"
-    whileFocus={{
-        scale: 1.02,
-            boxShadow: '0 0 0 3px rgba(100, 108, 255, 0.2)'
-    }}
-    transition={{ duration: 0.2 }}
-    />
-    <motion.input
-    type="number"
-    placeholder="Макс. возраст"
-    value={filters.ageMax || ''}
-    onChange={handleAgeMaxChange}
-    className="age-input"
-    min="0"
-    max="150"
-    whileFocus={{
-        scale: 1.02,
-            boxShadow: '0 0 0 3px rgba(100, 108, 255, 0.2)'
-    }}
-    transition={{ duration: 0.2 }}
-    />
-    </div>
-);
+            <input
+                type="text"
+                placeholder="Поиск по имени, email или телефону..."
+                value={localFilters.search || ''}
+                onChange={handleSearchChange}
+                className="search-input"
+            />
+            <select
+                value={filters.gender || ''}
+                onChange={handleGenderChange}
+                className="filter-select"
+            >
+                <option value="">Все полы</option>
+                <option value="male">Мужской</option>
+                <option value="female">Женский</option>
+            </select>
+            <input
+                type="number"
+                placeholder="Мин. возраст"
+                value={filters.ageMin || ''}
+                onChange={handleAgeMinChange}
+                className="age-input"
+                min="0"
+                max="150"
+            />
+            <input
+                type="number"
+                placeholder="Макс. возраст"
+                value={filters.ageMax || ''}
+                onChange={handleAgeMaxChange}
+                className="age-input"
+                min="0"
+                max="150"
+            />
+        </div>
+    );
 });
 
 FilterControls.displayName = 'FilterControls';

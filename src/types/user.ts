@@ -40,3 +40,14 @@ export interface FilterParams {
     ageMin?: number;
     ageMax?: number;
 }
+
+export interface QueryParams {
+    skip?: number;
+    limit?: number;
+    sortBy?: string;
+    order?: 'asc' | 'desc';
+    search?: string;
+    gender?: string;
+    ageMin?: number;
+    ageMax?: number;
+}

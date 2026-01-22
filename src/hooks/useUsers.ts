@@ -6,8 +6,10 @@ const ITEMS_PER_PAGE = 10;
 
 export const useUsers = () => {
     const [allUsers, setAllUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [totalUsers, setTotalUsers] = useState(0);
 
     // Пагинация
     const [currentPage, setCurrentPage] = useState(1);
@@ -19,15 +21,20 @@ export const useUsers = () => {
     // Фильтры
     const [filters, setFilters] = useState<FilterParams>({});
 
-    // Загрузка всех пользователей
-    const fetchUsers = useCallback(async () => {
+    // Флаг для отслеживания изменений
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+    // Загрузка всех пользователей один раз
+    const fetchAllUsers = useCallback(async () => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await UserService.getUsers(0, 100);
+            // Загружаем  пользователей (100) без пагинации
+            const response = await UserService.getUsers({ limit: 100 });
             setAllUsers(response.users);
-            setCurrentPage(1);
+            setTotalUsers(response.total);
+            setRefreshTrigger(prev => prev + 1); // обновление данных
         } catch (err) {
             console.error('Fetch error:', err);
             setError(
@@ -40,100 +47,100 @@ export const useUsers = () => {
         }
     }, []);
 
-    // Первоначальная загрузка
-    useEffect(() => {
-        fetchUsers().then(r => {});
-    }, [fetchUsers]);
-
-    // Фильтрация пользователей
-    const applyFilters = useCallback((users: User[], filterParams: FilterParams) => {
-        return users.filter(user => {
-            // Поиск
-            if (filterParams.search) {
-                const searchLower = filterParams.search.toLowerCase();
-                const matchesSearch =
-                    user.firstName.toLowerCase().includes(searchLower) ||
-                    user.lastName.toLowerCase().includes(searchLower) ||
-                    user.maidenName?.toLowerCase().includes(searchLower) ||
-                    user.email.toLowerCase().includes(searchLower) ||
-                    user.phone.includes(filterParams.search);
-
-                if (!matchesSearch) return false;
-            }
-
-            // Фильтр по полу
-            if (filterParams.gender && user.gender !== filterParams.gender) {
-                return false;
-            }
-
-            // Фильтр по возрасту
-            if (filterParams.ageMin !== undefined && user.age < filterParams.ageMin) {
-                return false;
-            }
-
-            if (filterParams.ageMax !== undefined && user.age > filterParams.ageMax) {
-                return false;
-            }
-
-            return true;
-        });
-    }, []);
-
-    // Сортировка пользователей
-    const applySorting = useCallback((users: User[], field: SortField, direction: SortDirection) => {
-        if (!field || !direction) return [...users];
-
-        return [...users].sort((a, b) => {
-            const getValue = (user: User, fieldName: SortField) => {
-                switch (fieldName) {
-                    case 'firstName': return user.firstName.toLowerCase();
-                    case 'lastName': return user.lastName.toLowerCase();
-                    case 'maidenName': return (user.maidenName || '').toLowerCase();
-                    case 'age': return user.age;
-                    case 'gender': return user.gender.toLowerCase();
-                    case 'phone': return user.phone;
-                    default: return '';
-                }
-            };
-
-            const aVal = getValue(a, field);
-            const bVal = getValue(b, field);
-
-            if (aVal < bVal) return direction === 'asc' ? -1 : 1;
-            if (aVal > bVal) return direction === 'asc' ? 1 : -1;
-            return 0;
-        });
-    }, []);
-
-    // Мемоизированные отфильтрованные пользователи
-    const filteredUsers = useMemo(() => {
-        if (allUsers.length === 0) return [];
-
-        const filtered = applyFilters(allUsers, filters);
-        return applySorting(filtered, sortField, sortDirection);
-    }, [allUsers, filters, sortField, sortDirection, applyFilters, applySorting]);
-
-    // Мемоизированные данные для пагинации
-    const paginationData = useMemo(() => {
-        const totalUsers = filteredUsers.length;
-        const totalPages = Math.ceil(totalUsers / ITEMS_PER_PAGE);
-        const validCurrentPage = Math.min(Math.max(1, currentPage), totalPages || 1);
-
-        if (currentPage !== validCurrentPage && totalPages > 0) {
-            setTimeout(() => setCurrentPage(validCurrentPage), 0);
+    // Применяем фильтрацию, сортировку и пагинацию к данным
+    const applyFiltersAndSorting = useCallback(() => {
+        if (allUsers.length === 0) {
+            setUsers([]);
+            return;
         }
 
-        return { totalUsers, totalPages, validCurrentPage };
-    }, [filteredUsers, currentPage]);
+        // 1. Фильтрация
+        let filtered = [...allUsers];
 
-    // Пользователи для текущей страницы
-    const currentUsers = useMemo(() => {
-        const { validCurrentPage } = paginationData;
-        const startIndex = (validCurrentPage - 1) * ITEMS_PER_PAGE;
-        const endIndex = startIndex + ITEMS_PER_PAGE;
+        if (filters.search) {
+            const searchLower = filters.search.toLowerCase();
+            filtered = filtered.filter(user =>
+                user.firstName.toLowerCase().includes(searchLower) ||
+                user.lastName.toLowerCase().includes(searchLower) ||
+                user.maidenName?.toLowerCase().includes(searchLower) ||
+                user.email.toLowerCase().includes(searchLower) ||
+                user.phone.includes(filters.search)
+            );
+        }
 
-        return filteredUsers.slice(startIndex, endIndex);
-    }, [filteredUsers, paginationData]);
+        if (filters.gender) {
+            filtered = filtered.filter(user => user.gender === filters.gender);
+        }
+
+        if (filters.ageMin !== undefined) {
+            filtered = filtered.filter(user => user.age >= filters.ageMin);
+        }
+
+        if (filters.ageMax !== undefined) {
+            filtered = filtered.filter(user => user.age <= filters.ageMax);
+        }
+
+        // 2 Сортировка
+        if (sortField && sortDirection) {
+            filtered.sort((a, b) => {
+                let aValue: any;
+                let bValue: any;
+
+                switch (sortField) {
+                    case 'firstName':
+                        aValue = a.firstName.toLowerCase();
+                        bValue = b.firstName.toLowerCase();
+                        break;
+                    case 'lastName':
+                        aValue = a.lastName.toLowerCase();
+                        bValue = b.lastName.toLowerCase();
+                        break;
+                    case 'maidenName':
+                        aValue = (a.maidenName || '').toLowerCase();
+                        bValue = (b.maidenName || '').toLowerCase();
+                        break;
+                    case 'age':
+                        aValue = a.age;
+                        bValue = b.age;
+                        break;
+                    case 'gender':
+                        aValue = a.gender.toLowerCase();
+                        bValue = b.gender.toLowerCase();
+                        break;
+                    case 'phone':
+                        aValue = a.phone;
+                        bValue = b.phone;
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        // Обновляем общее количество отфильтрованных пользователей
+        setTotalUsers(filtered.length);
+
+        // 3.Пагинация
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        const end = start + ITEMS_PER_PAGE;
+        const paginated = filtered.slice(start, end);
+
+        setUsers(paginated);
+    }, [allUsers, filters, sortField, sortDirection, currentPage]);
+
+    // Первоначальная загрузка всех пользователей
+    useEffect(() => {
+        fetchAllUsers().then(r => {});
+    }, [fetchAllUsers]);
+
+    // Применяем фильтры, сортировку и пагинацию при изменении параметров
+    useEffect(() => {
+        applyFiltersAndSorting();
+    }, [applyFiltersAndSorting, refreshTrigger]);
 
     // Обработчики
     const handleSort = useCallback((field: SortField) => {
@@ -159,23 +166,35 @@ export const useUsers = () => {
     }, []);
 
     const handleRetry = useCallback(() => {
-        fetchUsers();
-    }, [fetchUsers]);
+        fetchAllUsers();
+    }, [fetchAllUsers]);
+
+    // Данные пагинации
+    const totalPages = useMemo(() =>
+            Math.ceil(totalUsers / ITEMS_PER_PAGE),
+        [totalUsers]
+    );
+
+    // Корректируем текущую страницу
+    useEffect(() => {
+        if (currentPage > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages]);
 
     return {
         // Состояния
-        allUsers,
+        users,
         loading,
         error,
         currentPage,
         sortField,
         sortDirection,
         filters,
-        filteredUsers,
-        currentUsers,
+        totalUsers,
 
         // Данные пагинации
-        paginationData,
+        totalPages,
         itemsPerPage: ITEMS_PER_PAGE,
 
         // Обработчики
@@ -183,6 +202,6 @@ export const useUsers = () => {
         handleSort,
         handleFilterChange,
         handleRetry,
-        fetchUsers
+        refreshData: () => setRefreshTrigger(prev => prev + 1)
     };
 };
