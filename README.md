@@ -1,16 +1,94 @@
-# React + Vite
+Таблица пользователей
+Описание проекта
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Приложение для отображения таблицы пользователей с возможностью сортировки, фильтрации и постраничного просмотра. Проект реализован в соответствии с техническим заданием на разработку интерфейса для работы с данными пользователей.
+Функциональность
 
-Currently, two official plugins are available:
+    Таблица пользователей: Отображение списка пользователей с колонками: фамилия, имя, отчество, возраст, пол, номер телефона, email, страна и город
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+    Сортировка: Возможность сортировки по полям ФИО, возрасту, полу и номеру телефона с тремя состояниями (по возрастанию, по убыванию, без сортировки)
 
-## React Compiler
+    Фильтрация: Поиск по имени, email или телефону, фильтрация по полу, фильтрация по диапазону возраста
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+    Пагинация: Постраничное отображение данных (10 пользователей на страницу)
 
-## Expanding the ESLint configuration
+    Детальная информация: Модальное окно с подробной информацией о пользователе при клике на строку таблицы
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+    Настройка интерфейса: Изменение ширины колонок таблицы с помощью drag-and-drop
+
+    Обработка ошибок: Корректная обработка ошибок при загрузке данных
+
+Технологии
+
+    React 19 - библиотека для построения пользовательских интерфейсов
+
+    TypeScript - статическая типизация
+
+    Vite - сборщик проекта
+
+    Framer Motion - анимации интерфейса
+
+    Fetch API - для HTTP-запросов
+
+    GitHub Pages - хостинг приложения
+
+Архитектура проекта
+
+Проект имеет модульную структуру с разделением на:
+
+    Компоненты (Table, Modal, Pagination, Loading)
+
+    Кастомные хуки (useUsers, useModal, useColumnResize)
+
+    Сервисы (API взаимодействие)
+
+    Типы (TypeScript интерфейсы)
+
+Установка и запуск
+Предварительные требования
+
+    Node.js версии 18 или выше
+
+    npm или yarn
+
+# Клонирование репозитория
+git clone https://github.com/Whimsy-rat-trap/user-table-app
+
+# Установка зависимостей
+npm install
+
+# Запуск в режиме разработки
+npm run dev
+
+# Сборка для production
+npm run build
+
+# Просмотр собранного проекта
+npm run preview
+
+Деплой на GitHub Pages
+bash
+
+# Сборка и деплой
+npm run deploy
+
+Структура проекта
+text
+
+src/
+├── components/          # React компоненты
+│   ├── Table/          # Компоненты таблицы
+│   ├── Modal/          # Модальное окно
+│   ├── Pagination/     # Пагинация
+│   ├── Loading/        # Индикатор загрузки
+│   └── FilterControls/ # Элементы фильтрации
+├── hooks/              # Кастомные React хуки
+├── services/           # Сервисы для работы с API
+├── types/              # TypeScript типы
+├── utils/              # Вспомогательные функции
+├── App.tsx             # Корневой компонент
+└── main.tsx            # Точка входа
+
+Используемое API
+
+Приложение использует публичное API DummyJSON для получения тестовых данных о пользователях. API предоставляет 100 тестовых записей пользователей.
