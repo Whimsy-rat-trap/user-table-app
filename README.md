@@ -59,19 +59,19 @@
 ```bash```
 
 # Клонирование репозитория
-```git clone https://github.com/Whimsy-rat-trap/user-table-app```
+    git clone https://github.com/Whimsy-rat-trap/user-table-app
 
 # Переход в директорию проекта
-```cd user-table-app```
+    cd user-table-app
 
 # Установка зависимостей
-```npm install```
+    npm install
 
 # Запуск в режиме разработки
-```npm run dev```
+    npm run dev
 
 # Сборка для production
-```npm run build```
+    npm run build
 
 # Просмотр собранного проекта
-```npm run preview```
+    npm run preview
